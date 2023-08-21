@@ -57,7 +57,7 @@ public class SecurityConfig {
 
 
     /*
-        Storing in User Details in H2 Database
+        Storing in User Details in H2 Database without Hash
      */
 
     @Bean
