@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Annars kommer vi ej åt H2-console, då måste vi ha CSRF token
                 // Basic Auth enabled with default Pop Up Modal for Login Credentials in Browser
                 .httpBasic(Customizer.withDefaults())
-                // Allow any req that comes from the same origin to frame this App (For h2 Console)
+                // Allow any req that comes from the same origin to frame this App (For h2 Console, annars funkar ej den som den skall!)
                 .headers(headersConfig ->
                         headersConfig.frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin()))
                 .build();
