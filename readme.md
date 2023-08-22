@@ -13,4 +13,9 @@ exempel på två vanliga sårbarheter enligt OWASP Top 10 (2021).
 ### Todo Cryptographic Failure
  - Kryptera Lösenorden i config filen, får ej läcka ut info
  - Kryptera Lösenorden i databasen mha tex BcryptEncoder
- - Skriva Rapport om sårbarheterna och samt lösningen
+ - Skriva Rapport om sårbarheterna (CWE) och samt lösningen
+
+### CWE's
+- CWE-261 Weak Encoding for Password
+- CWE-319 Cleartext Transmission of Sensitive Information
+- CWE-259: Use of Hard-coded Password
