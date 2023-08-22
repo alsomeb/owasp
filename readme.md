@@ -9,3 +9,8 @@ exempel på två vanliga sårbarheter enligt OWASP Top 10 (2021).
 - Cryptographic Failure (Nr 2)
 - Injection (Nr 3)
 
+
+### Todo Cryptographic Failure
+ - Kryptera Lösenorden i config filen, får ej läcka ut info
+ - Kryptera Lösenorden i databasen mha tex BcryptEncoder
+ - Skriva Rapport om sårbarheterna och samt lösningen
