@@ -1,10 +1,14 @@
 package com.test.owasp.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,6 +16,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -21,6 +27,9 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${ADMIN_PASSWORD}")
+    private String adminPassword;
 
     /*
         The OPTIONS request is a preflight request made by the browser to check whether the actual request is safe to send or not.
@@ -56,28 +65,40 @@ public class SecurityConfig {
     }
 
 
-    /*
-        Storing in User Details in H2 Database without Hash
-     */
 
     @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource) {
-        var user = User.withUsername("tester")
-                .password("{bcrypt}$2a$12$BQBofpYcnwDyL8AWKXDgM.nNHDes9z.JrMZmA0l/rQP0FOl0v0xcK")
-                .roles("USER")
-                .build();
-
-        var user2 = User.withUsername("admin")
-                .password("{bcrypt}$2a$12$HFotosus.5Ae/rjvcFIwUeYekJ3eg9leG6.uVVAz3wasxvZcD6qM2")
+    public UserDetailsService userDetailsService(JdbcUserDetailsManager jdbcUserDetailsManager, PasswordEncoder passwordEncoder) {
+        var admin = User.withUsername("admin")
+                .password(adminPassword)
+                .passwordEncoder(passwordEncoder::encode) // hiding password with ENV variable
                 .roles("ADMIN", "USER")
                 .build();
 
-        // Create UserDetailsManager (Provides CRUD operations for both users and groups.)
-        // Insert the 2 created users
-        var jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        jdbcUserDetailsManager.createUser(user);
-        jdbcUserDetailsManager.createUser(user2);
+        // Insert the created user
+        jdbcUserDetailsManager.createUser(admin);
 
         return jdbcUserDetailsManager;
+    }
+
+    /*
+        AuthenticationManager Bean
+        Construct a ProviderManager using the given AuthenticationProviders
+    */
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        var authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder); // Use same encoder for creating and authentication
+        return new ProviderManager(authProvider);
+    }
+
+    @Bean
+    public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource) {
+        return new JdbcUserDetailsManager(dataSource);
+    }
+
+    @Bean
+    public PasswordEncoder bcryptEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
