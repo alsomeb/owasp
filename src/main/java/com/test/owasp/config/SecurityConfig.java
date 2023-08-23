@@ -68,7 +68,7 @@ public class SecurityConfig {
                 .build();
 
         var user2 = User.withUsername("admin")
-                .password("{noop}admin") // no password encrypt == {noop}
+                .password("{bcrypt}$2a$12$HFotosus.5Ae/rjvcFIwUeYekJ3eg9leG6.uVVAz3wasxvZcD6qM2") // no password encrypt == {noop}
                 .roles("ADMIN", "USER")
                 .build();
 
