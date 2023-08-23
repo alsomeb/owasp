@@ -13,6 +13,7 @@ public class VurnableService {
 
     private JdbcTemplate jdbcTemplate;
 
+    //Inte ett prepared statement, därför funkar injection
     public List<User> findUserByUsername(String username) {
         // This is where the SQL injection vulnerability is introduced.
         String sql = "SELECT * FROM USERS WHERE username = '" + username + "'";
