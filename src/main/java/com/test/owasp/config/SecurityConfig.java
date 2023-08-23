@@ -56,6 +56,9 @@ public class SecurityConfig {
     }
 
 
+        /*
+     * Configure an embedded H2 database as the data source.
+     */
     @Bean
     public DataSource dataSource() {
         return new EmbeddedDatabaseBuilder()
@@ -66,6 +69,9 @@ public class SecurityConfig {
 
 
 
+        /*
+     * Configure the UserDetailsService using JdbcUserDetailsManager to manage users in the database.
+     */
     @Bean
     public UserDetailsService userDetailsService(JdbcUserDetailsManager jdbcUserDetailsManager, PasswordEncoder passwordEncoder) {
         var admin = User.withUsername("admin")
@@ -75,15 +81,15 @@ public class SecurityConfig {
                 .build();
 
         // Insert the created user
+        // Create the admin user using JdbcUserDetailsManager
         jdbcUserDetailsManager.createUser(admin);
 
         return jdbcUserDetailsManager;
     }
 
     /*
-        AuthenticationManager Bean
-        Construct a ProviderManager using the given AuthenticationProviders
-    */
+     * Configure the AuthenticationManager with DaoAuthenticationProvider for user authentication.
+     */
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         var authProvider = new DaoAuthenticationProvider();
@@ -92,11 +98,21 @@ public class SecurityConfig {
         return new ProviderManager(authProvider);
     }
 
+
+        /*
+     * Create a JdbcUserDetailsManager bean for user management operations.
+     In summary, our custom AuthenticationManager bean setup ensures that user authentication in our application will go through a process of querying the database 
+     (via your UserDetailsService) for user details and validating the password (using our PasswordEncoder). 
+     If the user's credentials match the stored information, an authenticated Authentication object is returned.
+     */
     @Bean
     public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource) {
         return new JdbcUserDetailsManager(dataSource);
     }
 
+       /*
+     * Create a BCryptPasswordEncoder bean for securely encoding and verifying passwords.
+     */
     @Bean
     public PasswordEncoder bcryptEncoder() {
         return new BCryptPasswordEncoder();
