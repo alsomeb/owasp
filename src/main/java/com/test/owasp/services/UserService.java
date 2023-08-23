@@ -10,29 +10,40 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
-public class VulnerableService {
+public class UserService {
 
     private JdbcTemplate jdbcTemplate;
-
     private final PasswordEncoder passwordEncoder;
-
     private final JdbcUserDetailsManager jdbcUserDetailsManager;
 
-
-    //Inte ett prepared statement, därför funkar injection
+    //Nu används prepared statement så att injection misslyckas.
     public List<AppUser> findUserByUsername(String username) {
-        // This is where the SQL injection vulnerability is introduced.
-        String sql = "SELECT * FROM USERS WHERE username = '" + username + "'";
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                new AppUser(rs.getString("username"), rs.getString("password")));
+        List<AppUser> appUsers = new ArrayList<>();
+        String sql = "SELECT * FROM USERS WHERE username = ?";
+
+        try (PreparedStatement statement = Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection().prepareStatement(sql)) {
+            statement.setString(1, username);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                appUsers.add(new AppUser(rs.getString("username"), rs.getString("password")));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState());
+        }
+        return appUsers;
     }
 
-
-    // använder JDBCUserDetailsManger med bestpractice prepared statements och CRUD funktioner för skapa USer osv
+    // använder JDBCUserDetailsManger med best-practice prepared statements och CRUD funktioner för skapa USer osv
     public CreateNewUserResponseDTO createNewUser(AppUserDTO appUserDTO) {
 
         // New User
@@ -47,6 +58,6 @@ public class VulnerableService {
 
         // Return DTO Object
         return new CreateNewUserResponseDTO(newUser.getUsername());
-
     }
+
 }
