@@ -32,6 +32,7 @@ public class VulnerableService {
     }
 
 
+    // använder JDBCUserDetailsManger med bestpractice prepared statements och CRUD funktioner för skapa USer osv
     public CreateNewUserResponseDTO createNewUser(AppUserDTO appUserDTO) {
 
         // New User
