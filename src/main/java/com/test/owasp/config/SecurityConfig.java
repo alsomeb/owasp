@@ -88,8 +88,23 @@ public class SecurityConfig {
     }
 
     /*
-     * Configure the AuthenticationManager with DaoAuthenticationProvider for user authentication.
-     */
+     AuthenticationManager:
+     - The AuthenticationManager is a central component in Spring Security responsible for authenticating users.
+     
+     - It verifies user credentials during the authentication process.
+     
+     - Takes an authentication request, validates credentials, and returns an authenticated Authentication object if successful.
+     
+     - Handles the process of determining if a user is who they claim to be.
+
+
+     Our Custom Authentication Manager:
+     - We create a custom AuthenticationManager bean using a ProviderManager and a DaoAuthenticationProvider.
+
+     - The DaoAuthenticationProvider uses a UserDetailsService to retrieve user details and a PasswordEncoder to validate passwords.
+
+    - This custom AuthenticationManager is used to authenticate users during the login process and ensures secure password handling.
+         */
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         var authProvider = new DaoAuthenticationProvider();
