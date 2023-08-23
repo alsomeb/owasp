@@ -13,10 +13,8 @@ import java.util.Map;
 @RequestMapping("vulnerable")
 public class VulnerableController {
     private VurnableService vulnerableService;
-
-//Går att injecta
-//    @GetMapping("user")
-//    public List<User> getUserByUsername(@RequestParam String username) {
-//        return vulnerableService.findUserByUsername(username);
-//    }
+    @GetMapping("user")
+    public List<User> getUserByUsername(@RequestParam String username) {
+        return vulnerableService.findUserByUsername(username);
+    }
 }
