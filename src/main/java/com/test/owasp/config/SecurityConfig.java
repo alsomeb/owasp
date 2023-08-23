@@ -63,12 +63,12 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(DataSource dataSource) {
         var user = User.withUsername("tester")
-                .password("{bcrypt}$2a$12$BQBofpYcnwDyL8AWKXDgM.nNHDes9z.JrMZmA0l/rQP0FOl0v0xcK") // no password encrypt == {noop}
+                .password("{bcrypt}$2a$12$BQBofpYcnwDyL8AWKXDgM.nNHDes9z.JrMZmA0l/rQP0FOl0v0xcK")
                 .roles("USER")
                 .build();
 
         var user2 = User.withUsername("admin")
-                .password("{bcrypt}$2a$12$HFotosus.5Ae/rjvcFIwUeYekJ3eg9leG6.uVVAz3wasxvZcD6qM2") // no password encrypt == {noop}
+                .password("{bcrypt}$2a$12$HFotosus.5Ae/rjvcFIwUeYekJ3eg9leG6.uVVAz3wasxvZcD6qM2")
                 .roles("ADMIN", "USER")
                 .build();
 
