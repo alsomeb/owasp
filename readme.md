@@ -19,3 +19,6 @@ exempel på två vanliga sårbarheter enligt OWASP Top 10 (2021).
 - CWE-261 Weak Encoding for Password
 - CWE-319 Cleartext Transmission of Sensitive Information
 - CWE-259: Use of Hard-coded Password
+- CWE-89 Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
+- CWE-564 SQL Injection: Hibernate
+- CWE-20 Improper Input Validation
