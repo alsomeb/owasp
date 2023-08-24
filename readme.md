@@ -1,4 +1,4 @@
-# Exercise week 1, Grupp 3
+# Exercise week 1 IT-Security, Grupp 3
 
 ## Uppgift: OWASP Top 10 Sårbarhetsutmaning för Java-utvecklare
 ### Syfte:
