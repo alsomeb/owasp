@@ -36,6 +36,17 @@ public class SecurityConfig {
         By permitting all OPTIONS requests, you're allowing the browser to perform the necessary CORS checks before making the actual request,
         which helps to avoid the CORS error when accessing h2-console.
 
+        For example, a client might be asking a server if it would allow a DELETE request,
+        before sending a DELETE request, by using a preflight request
+
+
+        Frame Options:
+        The X-Frame-Options HTTP response header can be used to indicate whether a browser should be allowed
+        to render a page in a <frame>, <iframe>, <embed> or <object>.
+        Sites can use this to avoid clickjacking attacks, by ensuring that their content is not embedded into other sites.
+
+
+
      */
 
     @Bean
@@ -46,7 +57,8 @@ public class SecurityConfig {
                         .anyRequest()
                         .authenticated())
                 // Disable CSRF
-                .csrf(AbstractHttpConfigurer::disable) // Annars kommer vi ej åt H2-console, då måste vi ha CSRF token
+                // Annars kommer vi ej åt H2-console, då måste vi ha CSRF token
+                .csrf(AbstractHttpConfigurer::disable)
                 // Basic Auth enabled with default Pop Up Modal for Login Credentials in Browser
                 .httpBasic(Customizer.withDefaults())
                 // Allow any req that comes from the same origin to frame this App (For h2 Console, annars funkar ej den som den skall!)

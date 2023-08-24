@@ -25,7 +25,8 @@ public class UserService {
 
         String sql = "SELECT * FROM USERS WHERE username = ?";
 
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new AppUser(rs.getString("username"), rs.getString("password")), username);
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                new AppUser(rs.getString("username"), rs.getString("password")), username);
     }
 
     // använder JDBCUserDetailsManger med best-practice prepared statements och CRUD funktioner för skapa USer osv

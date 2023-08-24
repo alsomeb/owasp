@@ -18,12 +18,12 @@ public class UserController {
 
     private UserService userService;
 
-    @GetMapping("/get")
+    @GetMapping("search")
     public List<AppUser> getUserByUsername(@RequestParam String username) {
         return userService.findUserByUsername(username);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<CreateNewUserResponseDTO> createNewUser(@RequestBody AppUserDTO appUserDTO) {
         var result = userService.createNewUser(appUserDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
