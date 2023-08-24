@@ -10,12 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -27,20 +22,10 @@ public class UserService {
 
     //Nu används prepared statement så att injection misslyckas.
     public List<AppUser> findUserByUsername(String username) {
-        List<AppUser> appUsers = new ArrayList<>();
+
         String sql = "SELECT * FROM USERS WHERE username = ?";
 
-        try (PreparedStatement statement = Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection().prepareStatement(sql)) {
-            statement.setString(1, username);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                appUsers.add(new AppUser(rs.getString("username"), rs.getString("password")));
-            }
-
-        } catch (SQLException e) {
-            System.out.println(e.getSQLState());
-        }
-        return appUsers;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new AppUser(rs.getString("username"), rs.getString("password")), username);
     }
 
     // använder JDBCUserDetailsManger med best-practice prepared statements och CRUD funktioner för skapa USer osv
